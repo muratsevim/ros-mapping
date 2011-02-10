@@ -1,21 +1,23 @@
 all: nabo-installed
 
-NABO_DIR = nabo
-GIT_DIR = $(NABO_DIR)/git
-BUILD_DIR = $(NABO_DIR)/build
-GIT_URL = git://github.com/ethz-asl/libnabo.git
-GIT_REVISION = 591e63f0c78f74d1993e
-include $(shell rospack find mk)/git_checkout.mk
+TARBALL = build/libnabo-git-591e63f0c78f74d1993e.tar.gz
+TARBALL_URL = https://code.ros.org/svn/release/download/thirdparty/libnabo-git-591e63f0c78f74d1993e.tar.gz
+SOURCE_DIR = build/libnabo
+BUILD_DIR_EXT = build/libnabo-build
+MD5SUM_FILE = libnabo-git-591e63f0c78f74d1993e.tar.gz.md5sum
+UNPACK_CMD = tar xzf
+include $(shell rospack find mk)/download_unpack_build.mk
+
 EIGEN2_INCLUDE_DIR = $(shell rospack find eigen)/include
 
-nabo-installed: $(GIT_DIR) Makefile.nabo
-	mkdir -p $(BUILD_DIR)
-	cd $(BUILD_DIR) && cmake -DEIGEN2_INCLUDE_DIR=${EIGEN2_INCLUDE_DIR} -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INSTALL_PREFIX=.. ../git
-	cd $(BUILD_DIR) && make install
+nabo-installed: $(SOURCE_DIR)/unpacked Makefile.nabo
+	mkdir -p $(BUILD_DIR_EXT)
+	cd $(BUILD_DIR_EXT) && cmake -DEIGEN2_INCLUDE_DIR=${EIGEN2_INCLUDE_DIR} -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INSTALL_PREFIX=.. ../../$(SOURCE_DIR)
+	cd $(BUILD_DIR_EXT) && make install
 	touch nabo-installed
 
 clean:
-	rm -rf $(BUILD_DIR) $(NABO_DIR)/include $(NABO_DIR)/lib nabo-installed patched
+	rm -rf $(SOURCE_DIR) $(BUILD_DIR_EXT) nabo-installed
 
 wipe: clean
-	rm -rf $(NABO_DIR)
+	rm -rf build

@@ -27,19 +27,15 @@ if(_make_failed)
   message(FATAL_ERROR "Build of Nabo failed")
 endif(_make_failed)
 
-# Link nabo
-include_directories(${PROJECT_SOURCE_DIR}/nabo/include)
-link_directories(${PROJECT_SOURCE_DIR}/nabo/lib)
-
 # Build pointmatcher
 execute_process(COMMAND cmake -E chdir ${PROJECT_SOURCE_DIR} make -f Makefile.pointmatcher RESULT_VARIABLE _make_failed)
 if(_make_failed)
   message(FATAL_ERROR "Build of Pointmatcher failed")
 endif(_make_failed)
 
-# Link pointmatcher
-include_directories(${PROJECT_SOURCE_DIR}/pointmatcher/include)
-link_directories(${PROJECT_SOURCE_DIR}/pointmatcher/lib)
+# setup directories
+include_directories(${PROJECT_SOURCE_DIR}/build/include)
+link_directories(${PROJECT_SOURCE_DIR}/build/lib)
 
 # look for OpenCL library
 if (WIN32)
